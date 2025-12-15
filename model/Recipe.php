@@ -2,13 +2,10 @@
 include_once 'config.php';
 include_once 'RecipeInterface.php';
 include_once 'exceptions.php';
+include_once 'BaseModel.php';
 
-class Recipe implements RecipeInterface {
-    private $conn;
-
-    public function __construct($conn) {
-        $this->conn = $conn;
-    }
+class Recipe extends BaseModel implements RecipeInterface {
+    
 
     public function getAllRecipes() {
         $sql = "SELECT r.recipe_id, r.recipe_name, r.description, r.prep_time, r.cook_time, r.servings, r.difficulty, r.image, c.category_name
