@@ -1,0 +1,31 @@
+# Fișiere de configurare locale
+config.php
+
+# Directoare vendor și dependențe
+vendor/
+node_modules/
+
+# Fișiere IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Fișiere de sistem
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Fișiere temporare
+*.tmp
+*.temp
+
+# Cache
+cache/
+tmp/
+
+# Imagini uploadate de utilizatori (opțional - comentează dacă vrei să le incluzi)
+# imagini/uploads/
