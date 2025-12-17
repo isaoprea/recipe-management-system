@@ -4,7 +4,6 @@ require_once 'config.php';
 require_once __DIR__ . '/model/Recipe.php';
 require_once __DIR__ . '/model/exceptions.php';
 
-// Verificăm autentificarea
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = 'Trebuie să fii autentificat!';
     header('Location: index.php?page=login');
@@ -17,10 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    // Instanțiem Model-ul (MVC)
     $recipeModel = new Recipe($conn);
     
-    // Preluăm datele din formular
     $recipe_name = trim($_POST['recipe_name']);
     $description = trim($_POST['description']);
     $prep_time = (int)$_POST['prep_time'];
@@ -29,7 +26,6 @@ try {
     $difficulty = (int)$_POST['difficulty'];
     $category_id = (int)$_POST['category_id'];
     
-    // Upload imagine (dacă există)
     $image_path = 'imagini/default.jpeg';
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $upload_dir = __DIR__ . '/imagini/';
@@ -42,7 +38,6 @@ try {
         }
     }
     
-    // Pregătim datele pentru Model
     $recipeData = [
         'recipe_name' => $recipe_name,
         'description' => $description,
@@ -54,21 +49,17 @@ try {
         'category_id' => $category_id
     ];
     
-    // ✅ Folosim Model-ul pentru adăugare (MVC pattern)
     $recipe_id = $recipeModel->addRecipe($recipeData);
     
-    // Adăugăm user_id la rețeta creată (update)
     $stmt = $conn->prepare("UPDATE recipes SET user_id = ? WHERE recipe_id = ?");
     $stmt->bind_param("ii", $_SESSION['user_id'], $recipe_id);
     $stmt->execute();
     $stmt->close();
     
-    // Inserăm ingredientele
     if (isset($_POST['ingredients']) && is_array($_POST['ingredients'])) {
         foreach ($_POST['ingredients'] as $ingredient) {
             $ingredient = trim($ingredient);
             if (!empty($ingredient)) {
-                // Parsăm ingredientul (ex: "500g făină" -> quantity: 500, unit: g, name: făină)
                 preg_match('/^(\d+(?:\.\d+)?)\s*([a-zA-Z]*)\s+(.+)$/', $ingredient, $matches);
                 
                 if (count($matches) === 4) {
@@ -76,13 +67,11 @@ try {
                     $unit = !empty($matches[2]) ? $matches[2] : 'buc';
                     $ing_name = $matches[3];
                 } else {
-                    // Dacă nu putem parsa, salvăm tot ca nume
                     $quantity = 1;
                     $unit = 'buc';
                     $ing_name = $ingredient;
                 }
                 
-                // Verificăm dacă ingredientul există
                 $stmt = $conn->prepare("SELECT ingredient_id FROM ingredients WHERE ingredient_name = ?");
                 $stmt->bind_param("s", $ing_name);
                 $stmt->execute();
@@ -91,7 +80,6 @@ try {
                 if ($row = $result->fetch_assoc()) {
                     $ingredient_id = $row['ingredient_id'];
                 } else {
-                    // Creăm ingredientul nou
                     $stmt2 = $conn->prepare("INSERT INTO ingredients (ingredient_name, unit_of_measure) VALUES (?, ?)");
                     $stmt2->bind_param("ss", $ing_name, $unit);
                     $stmt2->execute();
@@ -100,7 +88,6 @@ try {
                 }
                 $stmt->close();
                 
-                // Adăugăm legătura rețetă-ingredient
                 $stmt = $conn->prepare("INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity) VALUES (?, ?, ?)");
                 $stmt->bind_param("iis", $recipe_id, $ingredient_id, $quantity);
                 $stmt->execute();
@@ -109,7 +96,6 @@ try {
         }
     }
     
-    // Inserăm pașii de preparare
     if (isset($_POST['steps']) && is_array($_POST['steps'])) {
         $step_number = 1;
         foreach ($_POST['steps'] as $step) {

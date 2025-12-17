@@ -11,8 +11,8 @@
         <span>🍳 Cook: <?= $row['cook_time'] ?> min</span>
       </div>
       <div class='details'>
-        <span>🍽️ <?= $row['servings'] ?> porții</span>
-        <span>🧂 <?= $row['difficulty'] ?></span>
+        <span> <?= $row['servings'] ?> porții</span>
+        <span> <?= $row['difficulty'] ?></span>
       </div>
       <div class='card-actions'>
         <a href='index.php?page=detalii&id=<?= $row['recipe_id'] ?>' class='btn btn-view'>Detalii</a>

@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $userId = $userModel->register($username, $email, $password);
         
         if ($userId) {
-            $message = "✅ Cont creat cu succes! <a href='login.php'>Autentifică-te</a>";
+            $message = " Cont creat cu succes! <a href='login.php'>Autentifică-te</a>";
         }
     } catch (InvalidUserDataException $e) {
         $message = "❌ " . $e->getMessage();

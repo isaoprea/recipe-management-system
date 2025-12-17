@@ -33,19 +33,19 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
 
                 <div class="form-group">
-                    <label for="cook_time">🍳 Timp gătire (min)</label>
+                    <label for="cook_time"> Timp gătire (min)</label>
                     <input type="number" id="cook_time" name="cook_time" min="0" value="30">
                 </div>
 
                 <div class="form-group">
-                    <label for="servings">🍽️ Porții</label>
+                    <label for="servings"> Porții</label>
                     <input type="number" id="servings" name="servings" min="1" value="4">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="difficulty">🧂 Dificultate</label>
+                    <label for="difficulty"> Dificultate</label>
                     <select id="difficulty" name="difficulty">
                         <option value="1">Ușor</option>
                         <option value="2" selected>Mediu</option>
@@ -54,7 +54,7 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
 
                 <div class="form-group">
-                    <label for="category_id">📂 Categorie</label>
+                    <label for="category_id"> Categorie</label>
                     <select id="category_id" name="category_id">
                         <?php
                         $result = $conn->query("SELECT * FROM categories ORDER BY category_name");
@@ -73,7 +73,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
 
         <div class="form-section">
-            <h2 class="section-title">🥕 Ingrediente</h2>
+            <h2 class="section-title"> Ingrediente</h2>
             <p class="hint">Adaugă ingredientele necesare (câte unul pe linie)</p>
             
             <div id="ingredients-container">
@@ -87,7 +87,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
 
         <div class="form-section">
-            <h2 class="section-title">👨‍🍳 Mod de preparare</h2>
+            <h2 class="section-title"> Mod de preparare</h2>
             <p class="hint">Adaugă pașii de preparare în ordine</p>
             
             <div id="steps-container">
@@ -103,7 +103,7 @@ if (!isset($_SESSION['user_id'])) {
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">💾 Salvează rețeta</button>
-            <a href="index.php?page=lista" class="btn btn-secondary">❌ Anulează</a>
+            <a href="index.php?page=lista" class="btn btn-secondary"> Anulează</a>
         </div>
     </form>
 </div>
