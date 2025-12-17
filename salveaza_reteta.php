@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once 'config.php';
+require_once __DIR__ . '/model/Recipe.php';
+require_once __DIR__ . '/model/exceptions.php';
 
 // Verificăm autentificarea
 if (!isset($_SESSION['user_id'])) {
@@ -15,6 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
+    // Instanțiem Model-ul (MVC)
+    $recipeModel = new Recipe($conn);
+    
     // Preluăm datele din formular
     $recipe_name = trim($_POST['recipe_name']);
     $description = trim($_POST['description']);
@@ -23,7 +28,6 @@ try {
     $servings = (int)$_POST['servings'];
     $difficulty = (int)$_POST['difficulty'];
     $category_id = (int)$_POST['category_id'];
-    $user_id = $_SESSION['user_id'];
     
     // Upload imagine (dacă există)
     $image_path = 'imagini/default.jpeg';
@@ -38,17 +42,25 @@ try {
         }
     }
     
-    // Începe tranzacția
-    $conn->begin_transaction();
+    // Pregătim datele pentru Model
+    $recipeData = [
+        'recipe_name' => $recipe_name,
+        'description' => $description,
+        'prep_time' => $prep_time,
+        'cook_time' => $cook_time,
+        'servings' => $servings,
+        'difficulty' => $difficulty,
+        'image' => $image_path,
+        'category_id' => $category_id
+    ];
     
-    // Inserăm rețeta
-    $stmt = $conn->prepare("
-        INSERT INTO recipes (recipe_name, description, prep_time, cook_time, servings, difficulty, image, category_id, user_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ");
-    $stmt->bind_param("ssiiisiii", $recipe_name, $description, $prep_time, $cook_time, $servings, $difficulty, $image_path, $category_id, $user_id);
+    // ✅ Folosim Model-ul pentru adăugare (MVC pattern)
+    $recipe_id = $recipeModel->addRecipe($recipeData);
+    
+    // Adăugăm user_id la rețeta creată (update)
+    $stmt = $conn->prepare("UPDATE recipes SET user_id = ? WHERE recipe_id = ?");
+    $stmt->bind_param("ii", $_SESSION['user_id'], $recipe_id);
     $stmt->execute();
-    $recipe_id = $conn->insert_id;
     $stmt->close();
     
     // Inserăm ingredientele
@@ -112,16 +124,19 @@ try {
         }
     }
     
-    // Confirmăm tranzacția
-    $conn->commit();
-    
     $_SESSION['success'] = '✅ Rețeta a fost adăugată cu succes!';
     header('Location: index.php?page=detalii&id=' . $recipe_id);
     exit();
     
+} catch (InvalidRecipeDataException $e) {
+    $_SESSION['error'] = '❌ Date invalide: ' . $e->getMessage();
+    header('Location: index.php?page=adauga');
+    exit();
+} catch (DatabaseException $e) {
+    $_SESSION['error'] = '❌ Eroare bază de date: ' . $e->getMessage();
+    header('Location: index.php?page=adauga');
+    exit();
 } catch (Exception $e) {
-    // Anulăm tranzacția în caz de eroare
-    $conn->rollback();
     $_SESSION['error'] = '❌ Eroare la adăugarea rețetei: ' . $e->getMessage();
     header('Location: index.php?page=adauga');
     exit();

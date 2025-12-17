@@ -1,13 +1,11 @@
-/* Body și fundal general */
 body {
   font-family: 'Segoe UI', sans-serif;
   background: linear-gradient(120deg, #ffb74d, #ff7043);
   margin: 0;
   padding: 0;
-  color: #333; /* text vizibil pe fundal */
+  color: #333; 
 }
 
-/* Header */
 header {
   text-align: center;
   padding: 30px 20px;
@@ -37,7 +35,6 @@ nav .btn:hover {
   transform: scale(1.05);
 }
 
-/* Carusel */
 .carousel {
   position: relative;
   width: 80%;
@@ -67,14 +64,12 @@ nav .btn:hover {
   100% { transform: translateX(0); }
 }
 
-/* Container carduri */
 .container {
   width: 80%;
   margin: 40px auto;
   text-align: center;
 }
 
-/* Footer */
 footer {
   text-align: center;
   padding: 20px;
@@ -82,7 +77,6 @@ footer {
   color: #fff;
 }
 
-/* Grid pentru carduri */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -90,7 +84,6 @@ footer {
   padding: 20px;
 }
 
-/* Card rețetă */
 .card {
   background: rgba(255,255,255,0.1);
   border-radius: 20px;
@@ -155,13 +148,12 @@ footer {
 .btn-delete { background-color: #e74c3c; }
 .btn-delete:hover { background-color: #c0392b; }
 
-/* Pagina detalii rețetă */
 .recipe-details {
     max-width: 800px;
     margin: 30px auto;
     padding: 20px;
     background: #fff;
-    color: #333; /* text vizibil */
+    color: #333; 
     border-radius: 10px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
@@ -181,7 +173,6 @@ footer {
     color: #333;
 }
 
-/* Header detalii rețetă */
 .recipe-header {
     display: flex;
     justify-content: space-between;
@@ -224,7 +215,6 @@ footer {
     background-color: #da190b;
 }
 
-/* Responsive pentru mobil */
 @media (max-width: 600px) {
   .details {
     flex-direction: column;
@@ -241,9 +231,6 @@ footer {
   }
 }
 
-/* ========================================
-   PAGINA ADĂUGARE REȚETĂ - DESIGN MODERN
-   ======================================== */
 
 .add-recipe-container {
     max-width: 900px;
@@ -333,7 +320,6 @@ footer {
     margin-bottom: 20px;
 }
 
-/* Ingrediente și Pași */
 .ingredient-row,
 .step-row {
     display: flex;
@@ -405,7 +391,6 @@ footer {
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
-/* Butoane acțiune finală */
 .form-actions {
     display: flex;
     gap: 15px;
@@ -451,7 +436,6 @@ footer {
     transform: translateY(-3px);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .add-recipe-container {
         padding: 10px;

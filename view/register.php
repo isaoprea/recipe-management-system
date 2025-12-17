@@ -18,7 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         include_once __DIR__ . '/../model/user.php';
         $userModel = new User($conn);
         
-        // Încercăm să înregistrăm utilizatorul
         $userId = $userModel->register($username, $email, $password);
         
         if ($userId) {

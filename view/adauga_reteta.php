@@ -1,7 +1,6 @@
 <?php 
 include __DIR__ . '/header.php';
 
-// Verificăm dacă utilizatorul este autentificat
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = 'Trebuie să fii autentificat pentru a adăuga rețete!';
     header('Location: index.php?page=login');
@@ -14,8 +13,7 @@ if (!isset($_SESSION['user_id'])) {
     
     <form action="salveaza_reteta.php" method="post" enctype="multipart/form-data" class="modern-form">
         
-        <!-- Informații de bază -->
-        <div class="form-section">
+        <div class="form-section">  
             <h2 class="section-title">📋 Informații de bază</h2>
             
             <div class="form-group">
@@ -25,7 +23,7 @@ if (!isset($_SESSION['user_id'])) {
 
             <div class="form-group">
                 <label for="description">Descriere *</label>
-                <textarea id="description" name="description" rows="4" required placeholder="O scurtă descriere a rețetei..."></textarea>
+                <textarea id="description" name="description" grows="4" required placeholder="O scurtă descriere a rețetei..."></textarea>
             </div>
 
             <div class="form-row">
@@ -74,7 +72,6 @@ if (!isset($_SESSION['user_id'])) {
             </div>
         </div>
 
-        <!-- Ingrediente -->
         <div class="form-section">
             <h2 class="section-title">🥕 Ingrediente</h2>
             <p class="hint">Adaugă ingredientele necesare (câte unul pe linie)</p>
@@ -89,7 +86,6 @@ if (!isset($_SESSION['user_id'])) {
             <button type="button" class="btn-add" onclick="addIngredient()">➕ Adaugă ingredient</button>
         </div>
 
-        <!-- Pași de preparare -->
         <div class="form-section">
             <h2 class="section-title">👨‍🍳 Mod de preparare</h2>
             <p class="hint">Adaugă pașii de preparare în ordine</p>
@@ -105,7 +101,6 @@ if (!isset($_SESSION['user_id'])) {
             <button type="button" class="btn-add" onclick="addStep()">➕ Adaugă pas</button>
         </div>
 
-        <!-- Butoane acțiune -->
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">💾 Salvează rețeta</button>
             <a href="index.php?page=lista" class="btn btn-secondary">❌ Anulează</a>

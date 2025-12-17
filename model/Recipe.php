@@ -116,7 +116,6 @@ class Recipe extends BaseModel implements RecipeInterface {
     }
 
     public function updateRecipe($id, $data) {
-        // Validare date
         if (empty($data['recipe_name']) || strlen($data['recipe_name']) < 3) {
             throw new InvalidRecipeDataException("Numele rețetei trebuie să aibă minim 3 caractere.");
         }
@@ -167,7 +166,6 @@ class Recipe extends BaseModel implements RecipeInterface {
     }
 
     public function deleteRecipe($id) {
-        // Verificăm dacă rețeta există
         $checkStmt = $this->conn->prepare("SELECT recipe_id FROM recipes WHERE recipe_id = ?");
         $checkStmt->bind_param("i", $id);
         $checkStmt->execute();

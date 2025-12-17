@@ -1,8 +1,4 @@
-/* ==================================
-   DESIGN MODERN - PAGINA AUTENTIFICARE & ÎNREGISTRARE
-   ================================== */
 
-/* Reset & Base */
 * {
     margin: 0;
     padding: 0;
@@ -21,7 +17,6 @@ body {
     overflow: hidden;
 }
 
-/* Background animated circles */
 body::before,
 body::after {
     content: '';
@@ -54,7 +49,6 @@ body::after {
     75% { transform: translate(40px, -40px) scale(1.05); }
 }
 
-/* Auth Container */
 .auth-container {
     width: 100%;
     max-width: 450px;
@@ -62,7 +56,6 @@ body::after {
     z-index: 1;
 }
 
-/* Auth Card */
 .auth-card {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
@@ -127,7 +120,6 @@ body::after {
     font-weight: 400;
 }
 
-/* Messages */
 .message {
     padding: 16px 20px;
     border-radius: 12px;
@@ -214,7 +206,6 @@ body::after {
     color: #667eea;
 }
 
-/* Toggle Password Icon */
 .toggle-password {
     position: absolute;
     right: 18px;
@@ -229,7 +220,6 @@ body::after {
     color: #667eea;
 }
 
-/* Primary Button */
 .btn-primary {
     width: 100%;
     padding: 16px 24px;
@@ -261,7 +251,6 @@ body::after {
     font-size: 18px;
 }
 
-/* Footer */
 .auth-footer {
     text-align: center;
 }
@@ -301,7 +290,6 @@ body::after {
     font-size: 12px;
 }
 
-/* Responsive Design */
 @media (max-width: 480px) {
     .auth-card {
         padding: 40px 30px;
@@ -332,7 +320,6 @@ body::after {
     }
 }
 
-/* Dark mode support (optional) */
 @media (prefers-color-scheme: dark) {
     body {
         background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);

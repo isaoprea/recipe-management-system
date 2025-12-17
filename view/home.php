@@ -8,12 +8,6 @@
   </div>
 </div>
 
-<div class="container">
-  <!-- <a href="index.php?page=lista" class="btn">📖 Vezi toate rețetele</a>
-  <a href="index.php?page=adauga" class="btn">➕ Adaugă rețetă nouă</a>
-  <a href="index.php?page=login" class="btn">🔐 Autentificare</a>
-  <a href="index.php?page=register" class="btn">🧾 Înregistrare</a>
-  <a href="index.php?page=despre" class="btn">ℹ️ Despre site</a> -->
-</div>
+
 
 <?php include __DIR__ . '/footer.php'; ?>

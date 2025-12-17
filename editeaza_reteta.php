@@ -8,7 +8,6 @@ if (!isset($conn)) {
 }
 include_once __DIR__ . '/model/Recipe.php';
 
-// Verificăm dacă utilizatorul este logat
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = 'Trebuie să fii autentificat pentru a edita rețete!';
     header('Location: index.php?page=login');
@@ -18,7 +17,6 @@ if (!isset($_SESSION['user_id'])) {
 $recipeModel = new Recipe($conn);
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Preluăm rețeta din baza de date
 try {
     $recipe = $recipeModel->getRecipeById($id);
 } catch (Exception $e) {
@@ -27,10 +25,8 @@ try {
     exit;
 }
 
-// Procesăm formularul la submit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Preluăm datele din formular
         $recipe_name = trim($_POST['recipe_name']);
         $description = trim($_POST['description']);
         $prep_time = (int)$_POST['prep_time'];
@@ -39,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $difficulty = (int)$_POST['difficulty'];
         $category_id = (int)$_POST['category_id'];
         
-        // Upload imagine (dacă există)
         $image_path = $recipe['image'];
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $upload_dir = __DIR__ . '/imagini/';
@@ -48,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $target_path = $upload_dir . $new_filename;
             
             if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
-                // Ștergem imaginea veche dacă nu este cea implicită
                 if (!empty($recipe['image']) && $recipe['image'] !== 'imagini/default.jpeg' && file_exists($recipe['image'])) {
                     unlink($recipe['image']);
                 }
@@ -56,31 +50,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        // Începe tranzacția
-        $conn->begin_transaction();
+        $recipeData = [
+            'recipe_name' => $recipe_name,
+            'description' => $description,
+            'prep_time' => $prep_time,
+            'cook_time' => $cook_time,
+            'servings' => $servings,
+            'difficulty' => $difficulty,
+            'image' => $image_path,
+            'category_id' => $category_id
+        ];
         
-        // Actualizăm rețeta
-        $stmt = $conn->prepare("
-            UPDATE recipes 
-            SET recipe_name = ?, description = ?, prep_time = ?, cook_time = ?, servings = ?, difficulty = ?, image = ?, category_id = ?
-            WHERE recipe_id = ? AND user_id = ?
-        ");
-        $stmt->bind_param("ssiiiisiii", $recipe_name, $description, $prep_time, $cook_time, $servings, $difficulty, $image_path, $category_id, $id, $_SESSION['user_id']);
-        $stmt->execute();
-        $stmt->close();
+        $recipeModel->updateRecipe($id, $recipeData);
         
-        // Ștergem ingredientele vechi
         $stmt = $conn->prepare("DELETE FROM recipe_ingredients WHERE recipe_id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $stmt->close();
         
-        // Inserăm ingredientele noi
         if (isset($_POST['ingredients']) && is_array($_POST['ingredients'])) {
             foreach ($_POST['ingredients'] as $ingredient) {
                 $ingredient = trim($ingredient);
                 if (!empty($ingredient)) {
-                    // Parsăm ingredientul
                     preg_match('/^(\d+(?:\.\d+)?)\s*([a-zA-Z]*)\s+(.+)$/', $ingredient, $matches);
                     
                     if (count($matches) === 4) {
@@ -93,7 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $ing_name = $ingredient;
                     }
                     
-                    // Verificăm dacă ingredientul există
                     $stmt = $conn->prepare("SELECT ingredient_id FROM ingredients WHERE ingredient_name = ?");
                     $stmt->bind_param("s", $ing_name);
                     $stmt->execute();
@@ -102,7 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($row = $result->fetch_assoc()) {
                         $ingredient_id = $row['ingredient_id'];
                     } else {
-                        // Creăm ingredientul nou
                         $stmt2 = $conn->prepare("INSERT INTO ingredients (ingredient_name, unit_of_measure) VALUES (?, ?)");
                         $stmt2->bind_param("ss", $ing_name, $unit);
                         $stmt2->execute();
@@ -111,7 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     $stmt->close();
                     
-                    // Adăugăm legătura rețetă-ingredient
                     $stmt = $conn->prepare("INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity) VALUES (?, ?, ?)");
                     $stmt->bind_param("iis", $id, $ingredient_id, $quantity);
                     $stmt->execute();
@@ -120,13 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        // Ștergem pașii vechi
         $stmt = $conn->prepare("DELETE FROM preparation_steps WHERE recipe_id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $stmt->close();
         
-        // Inserăm pașii noi
         if (isset($_POST['steps']) && is_array($_POST['steps'])) {
             $step_number = 1;
             foreach ($_POST['steps'] as $step) {
@@ -141,16 +127,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        // Confirmăm tranzacția
-        $conn->commit();
-        
         $_SESSION['success'] = '✅ Rețeta a fost actualizată cu succes!';
         header('Location: index.php?page=detalii&id=' . $id);
         exit();
         
+    } catch (InvalidRecipeDataException $e) {
+        $_SESSION['error'] = '❌ Date invalide: ' . $e->getMessage();
+    } catch (RecipeNotFoundException $e) {
+        $_SESSION['error'] = '❌ ' . $e->getMessage();
+        header('Location: index.php?page=lista');
+        exit();
     } catch (Exception $e) {
-        // Anulăm tranzacția în caz de eroare
-        $conn->rollback();
         $_SESSION['error'] = '❌ Eroare la actualizarea rețetei: ' . $e->getMessage();
     }
 }
@@ -163,7 +150,6 @@ include __DIR__ . '/view/header.php';
     
     <form action="" method="post" enctype="multipart/form-data" class="modern-form">
         
-        <!-- Informații de bază -->
         <div class="form-section">
             <h2 class="section-title">📋 Informații de bază</h2>
             
@@ -231,7 +217,6 @@ include __DIR__ . '/view/header.php';
             </div>
         </div>
 
-        <!-- Ingrediente -->
         <div class="form-section">
             <h2 class="section-title">🥕 Ingrediente</h2>
             <p class="hint">Editează ingredientele necesare (câte unul pe linie)</p>
@@ -257,7 +242,6 @@ include __DIR__ . '/view/header.php';
             <button type="button" class="btn-add" onclick="addIngredient()">➕ Adaugă ingredient</button>
         </div>
 
-        <!-- Pași de preparare -->
         <div class="form-section">
             <h2 class="section-title">👨‍🍳 Mod de preparare</h2>
             <p class="hint">Editează pașii de preparare în ordine</p>
@@ -283,7 +267,6 @@ include __DIR__ . '/view/header.php';
             <button type="button" class="btn-add" onclick="addStep()">➕ Adaugă pas</button>
         </div>
 
-        <!-- Butoane acțiune -->
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">💾 Salvează modificările</button>
             <a href="index.php?page=detalii&id=<?= $id ?>" class="btn btn-secondary">❌ Anulează</a>

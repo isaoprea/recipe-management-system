@@ -19,12 +19,11 @@ require_once __DIR__ . '/../model/RecipeInterface.php';
 require_once __DIR__ . '/../model/Recipe.php';
 require_once __DIR__ . '/../model/user.php';
 
-// Configurare pentru testare (folosim o conexiune la baza de date de test)
 function getTestDatabaseConnection() {
     $servername = "127.0.0.1";
     $username = "root";
     $password = "";
-    $dbname = "recipes_db_test"; // Bază de date separată pentru teste
+    $dbname = "recipes_db_test"; 
     $port = 3307;
 
     $conn = new mysqli($servername, $username, $password, $dbname, $port);

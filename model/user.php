@@ -44,22 +44,18 @@ class User extends BaseModel {
     }
 
     public function register($username, $email, $password) {
-        // Validare username
         if (empty($username) || strlen($username) < 3) {
             throw new InvalidUserDataException("Numele de utilizator trebuie să aibă minim 3 caractere.");
         }
         
-        // Validare email
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidUserDataException("Adresa de email nu este validă.");
         }
         
-        // Validare parolă
         if (empty($password) || strlen($password) < 6) {
             throw new InvalidUserDataException("Parola trebuie să aibă minim 6 caractere.");
         }
         
-        // Verificăm dacă username-ul există deja
         $checkStmt = $this->conn->prepare("SELECT id FROM users WHERE username = ?");
         $checkStmt->bind_param("s", $username);
         $checkStmt->execute();
@@ -68,7 +64,6 @@ class User extends BaseModel {
         }
         $checkStmt->close();
         
-        // Verificăm dacă email-ul există deja
         $checkStmt = $this->conn->prepare("SELECT id FROM users WHERE email = ?");
         $checkStmt->bind_param("s", $email);
         $checkStmt->execute();

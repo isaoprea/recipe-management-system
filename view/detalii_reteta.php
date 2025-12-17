@@ -8,7 +8,6 @@
 
 <div class="recipe-details">
 
-    <!-- Header cu titlu și acțiuni -->
     <div class="recipe-header">
         <h1><?= htmlspecialchars($recipe['recipe_name']) ?></h1>
         
@@ -23,17 +22,14 @@
         <?php endif; ?>
     </div>
 
-    <!-- Imagine rețetă -->
     <?php if (!empty($recipe['image'])): ?>
         <img src="<?= htmlspecialchars($recipe['image']) ?>" 
              class="details-img" 
              alt="<?= htmlspecialchars($recipe['recipe_name']) ?>">
     <?php endif; ?>
 
-    <!-- Descriere -->
     <p><?= nl2br(htmlspecialchars($recipe['description'])) ?></p>
 
-    <!-- Ingrediente -->
     <h3>Ingrediente:</h3>
     <ul class="ingredients-list">
         <?php foreach ($recipe['ingredients'] as $ing): ?>
@@ -45,7 +41,6 @@
         <?php endforeach; ?>
     </ul>
 
-    <!-- Mod de preparare -->
     <h3>Mod de preparare:</h3>
     <ol class="steps-list">
         <?php foreach ($recipe['steps'] as $step): ?>
