@@ -6,7 +6,7 @@ Proiect realizat pentru disciplina DAW (Dezvoltarea Aplicațiilor Web).
 * **Autentificare:** Login și înregistrare utilizatori.
 * **Catalog:** Vizualizarea rețetelor sub formă de carduri.
 * **Detalii:** Ingrediente și mod de preparare detaliat.
-* **Operatii CRUD:**Adăugare, vizualizare, editare și ștergere.
+* **Operatii CRUD:** Adăugare, vizualizare, editare și ștergere.
 * **Testare:** Am implementat si testarea aplicatiei cu PHPUnit
 
 ##  Tehnologii Utilizate
